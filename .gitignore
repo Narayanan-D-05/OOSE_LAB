@@ -4,10 +4,10 @@ node_modules/
 stock-system/node_modules/
 
 # Next.js
-.next/
-stock-system/.next/
-out/
-stock-system/out/
+/.next/
+/stock-system/.next/
+/out/
+/stock-system/out/
 
 # Environment files
 .env*
