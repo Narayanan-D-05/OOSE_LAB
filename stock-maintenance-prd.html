@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Stock Maintenance System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e;
+    --ink-muted: #5a5a5a;
+    --ink-faint: #a0a0a0;
+    --surface: #f5f3ef;
+    --surface-card: #ffffff;
+    --border: #e0ddd8;
+    --border-accent: #c8c4bc;
+    --accent: #1a3a2a;
+    --accent-light: #2d6a4f;
+    --accent-pale: #e8f5ee;
+    --amber: #d4820a;
+    --amber-pale: #fef3d8;
+    --blue: #1a3a5c;
+    --blue-pale: #e8f0f8;
+    --red: #b83030;
+    --red-pale: #fdeaea;
+    --purple: #4a2a7a;
+    --purple-pale: #f0eaf8;
+    --tag-h: 24px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* ── TOP STRIPE ───────────────────────────────────────────── */
+  .top-bar {
+    background: var(--accent);
+    padding: 10px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .top-bar span { color: #a8c9b5; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .06em; }
+  .status-pill {
+    background: #2d6a4f;
+    color: #a8c9b5;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .05em;
+  }
+
+  /* ── HERO ─────────────────────────────────────────────────── */
+  .hero {
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-card);
+  }
+  .doc-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-light);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .doc-type::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent-light);
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 1.1;
+    color: var(--ink);
+    max-width: 700px;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    color: var(--ink-muted);
+    font-size: 16px;
+    max-width: 580px;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+  .meta-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 3px;
+  }
+  .meta-item span {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── BODY LAYOUT ──────────────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ──────────────────────────────────────────────── */
+  .sidebar {
+    padding: 40px 24px;
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .sidebar nav a {
+    display: block;
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 5px 0;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    transition: all .15s;
+  }
+  .sidebar nav a:hover { color: var(--accent-light); border-left-color: var(--accent-light); }
+  .sidebar nav a.child { padding-left: 20px; font-size: 12px; color: var(--ink-faint); }
+  .sidebar nav a.child:hover { color: var(--accent-light); }
+
+  .tech-stack-sidebar {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .tech-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 2px 2px 2px 0;
+  }
+  .tb-green { background: var(--accent-pale); color: var(--accent-light); }
+  .tb-blue  { background: var(--blue-pale);   color: var(--blue); }
+  .tb-amber { background: var(--amber-pale);  color: var(--amber); }
+  .tb-purple{ background: var(--purple-pale); color: var(--purple); }
+
+  /* ── MAIN CONTENT ─────────────────────────────────────────── */
+  main { padding: 40px 48px; }
+
+  section { margin-bottom: 56px; }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .sec-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    margin: 24px 0 10px;
+  }
+
+  p { margin-bottom: 12px; color: var(--ink-muted); font-weight: 300; }
+
+  /* ── FEATURE CARDS ────────────────────────────────────────── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .feature-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .feature-card .fc-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .fc-green { background: var(--accent-pale); }
+  .fc-blue  { background: var(--blue-pale); }
+  .fc-amber { background: var(--amber-pale); }
+  .fc-purple{ background: var(--purple-pale); }
+  .fc-red   { background: var(--red-pale); }
+
+  .feature-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .feature-card p { font-size: 12.5px; margin: 0; line-height: 1.55; }
+
+  /* ── REQ TABLE ────────────────────────────────────────────── */
+  .req-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .req-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .req-table tbody tr { border-bottom: 1px solid var(--border); }
+  .req-table tbody tr:last-child { border-bottom: none; }
+  .req-table tbody td { padding: 10px 12px; color: var(--ink-muted); vertical-align: top; }
+  .req-table tbody td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  /* ── PRIORITY TAGS ────────────────────────────────────────── */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: var(--tag-h);
+    padding: 0 8px;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .05em;
+    white-space: nowrap;
+  }
+  .tag-p1 { background: #fdeaea; color: #8b1a1a; }
+  .tag-p2 { background: var(--amber-pale); color: #7a4a08; }
+  .tag-p3 { background: var(--accent-pale); color: var(--accent); }
+  .tag-mvp { background: #1a3a2a; color: #a8c9b5; }
+  .tag-v2  { background: var(--blue-pale); color: var(--blue); }
+  .tag-future { background: var(--surface); color: var(--ink-faint); border: 1px solid var(--border); }
+
+  /* ── SCHEMA BLOCK ─────────────────────────────────────────── */
+  .schema-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .schema-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+  .schema-header {
+    background: var(--accent);
+    color: #a8c9b5;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 8px 12px;
+    letter-spacing: .04em;
+  }
+  .schema-body { padding: 0; }
+  .schema-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 12px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .schema-row:last-child { border-bottom: none; }
+  .schema-row .col-name { color: var(--ink); font-family: 'DM Mono', monospace; font-size: 11px; }
+  .schema-row .col-type { color: var(--ink-faint); font-family: 'DM Mono', monospace; font-size: 10px; }
+  .pk-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    background: var(--amber-pale);
+    color: var(--amber);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .fk-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    background: var(--blue-pale);
+    color: var(--blue);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── ARCH BLOCK ───────────────────────────────────────────── */
+  .arch-layer {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 8px 0;
+    overflow: hidden;
+  }
+  .arch-layer-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-layer-header .layer-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .dot-green  { background: var(--accent-light); }
+  .dot-blue   { background: #3b82c4; }
+  .dot-amber  { background: var(--amber); }
+  .dot-purple { background: #6b46a8; }
+
+  .arch-layer-header span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .arch-layer-body {
+    padding: 12px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .arch-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    background: var(--surface-card);
+  }
+  .arch-chip strong { color: var(--ink); font-weight: 500; }
+
+  /* ── NFR BLOCK ────────────────────────────────────────────── */
+  .nfr-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .nfr-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .nfr-card h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .nfr-stat {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .nfr-desc { font-size: 12px; color: var(--ink-muted); }
+
+  /* ── TIMELINE ─────────────────────────────────────────────── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--surface-card);
+    border: 2px solid var(--border);
+  }
+  .tl-item.active::before { background: var(--accent-light); border-color: var(--accent-light); }
+  .tl-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .tl-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .tl-body { font-size: 12.5px; color: var(--ink-muted); }
+
+  /* ── CALLOUT ──────────────────────────────────────────────── */
+  .callout {
+    border-left: 3px solid var(--accent-light);
+    background: var(--accent-pale);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .callout.warn {
+    border-left-color: var(--amber);
+    background: var(--amber-pale);
+    color: #7a4a08;
+  }
+  .callout.info {
+    border-left-color: var(--blue);
+    background: var(--blue-pale);
+    color: var(--blue);
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────────────────── */
+  .code-block {
+    background: #0e1a14;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 12px 0;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #a8c9b5;
+  }
+  .code-comment { color: #4a7a5a; }
+  .code-key     { color: #7dd3b0; }
+  .code-val     { color: #e8c97a; }
+  .code-str     { color: #d4a8e8; }
+  .code-fn      { color: #7ab5e8; }
+
+  /* ── USER ROLES ───────────────────────────────────────────── */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .role-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 16px;
+  }
+  .role-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .ra-green  { background: var(--accent-pale); color: var(--accent-light); }
+  .ra-blue   { background: var(--blue-pale); color: var(--blue); }
+  .ra-amber  { background: var(--amber-pale); color: var(--amber); }
+  .ra-purple { background: var(--purple-pale); color: var(--purple); }
+  .ra-red    { background: var(--red-pale); color: var(--red); }
+
+  .role-card h4 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+  .role-card ul { padding-left: 14px; }
+  .role-card li { font-size: 11.5px; color: var(--ink-muted); margin-bottom: 3px; }
+
+  /* ── DIVIDER ──────────────────────────────────────────────── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* ── FOOTER ───────────────────────────────────────────────── */
+  footer {
+    background: var(--accent);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+  }
+  footer span { color: #5a8a6a; font-family: 'DM Mono', monospace; font-size: 11px; }
+
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .feature-grid, .schema-grid, .roles-grid, .nfr-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+    main { padding: 24px 20px; }
+    .hero { padding: 32px 20px 28px; }
+    .top-bar, footer { padding: 10px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>SMS-PRD-2026 · v1.0 · CONFIDENTIAL</span>
+  <span class="status-pill">DRAFT</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="doc-type">Product Requirements Document</div>
+  <h1>Stock Maintenance System</h1>
+  <p class="hero-sub">A full-stack web application for real-time inventory management — built on Next.js, deployed to a live URL, and powered by Supabase as the backend database.</p>
+  <div class="meta-row">
+    <div class="meta-item"><label>Version</label><span>1.0</span></div>
+    <div class="meta-item"><label>Date</label><span>April 2026</span></div>
+    <div class="meta-item"><label>Status</label><span>Draft</span></div>
+    <div class="meta-item"><label>Database</label><span>Supabase (PostgreSQL)</span></div>
+    <div class="meta-item"><label>Deployment</label><span>Vercel (Live URL)</span></div>
+    <div class="meta-item"><label>Source SRS</label><span>Ex No. 02–05, Jan–Feb 2026</span></div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="layout">
+
+  <!-- SIDEBAR NAV -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Contents</div>
+    <nav>
+      <a href="#overview">1. Overview</a>
+      <a href="#goals">2. Goals & Success Metrics</a>
+      <a href="#actors">3. User Roles</a>
+      <a href="#features">4. Feature Scope</a>
+      <a href="#fr">5. Functional Requirements</a>
+      <a class="child" href="#fr-auth">Authentication</a>
+      <a class="child" href="#fr-products">Products</a>
+      <a class="child" href="#fr-suppliers">Suppliers</a>
+      <a class="child" href="#fr-stock">Stock Control</a>
+      <a class="child" href="#fr-orders">Purchase Orders</a>
+      <a class="child" href="#fr-customers">Customers</a>
+      <a class="child" href="#fr-billing">Billing & Invoicing</a>
+      <a class="child" href="#fr-payments">Online Payments</a>
+      <a class="child" href="#fr-reports">Reports</a>
+      <a href="#nfr">6. Non-Functional Req.</a>
+      <a href="#schema">7. Supabase Schema</a>
+      <a href="#arch">8. Architecture</a>
+      <a href="#deployment">9. Deployment</a>
+      <a href="#timeline">10. Roadmap</a>
+      <a href="#constraints">11. Constraints</a>
+    </nav>
+
+    <div class="tech-stack-sidebar">
+      <div class="sidebar-label">Tech Stack</div>
+      <span class="tech-badge tb-green">Next.js 14</span>
+      <span class="tech-badge tb-green">React 18</span>
+      <span class="tech-badge tb-blue">Supabase</span>
+      <span class="tech-badge tb-blue">PostgreSQL</span>
+      <span class="tech-badge tb-amber">Vercel</span>
+      <span class="tech-badge tb-purple">Tailwind CSS</span>
+      <span class="tech-badge tb-green">Supabase Auth</span>
+      <span class="tech-badge tb-blue">Row Level Security</span>
+      <span class="tech-badge tb-amber">Stripe</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- 1. OVERVIEW -->
+    <section id="overview">
+      <h2><span class="sec-num">01</span> Overview</h2>
+      <p>The Stock Maintenance System (SMS) is a web-based inventory management application that replaces manual stock registers and spreadsheet workflows. It provides real-time tracking of products, suppliers, stock levels, purchase orders, customer transactions, and invoice generation.</p>
+      <p>This PRD defines the complete product scope for building SMS as a live web application with Supabase as the database backend and Vercel for hosting. All users access the system through a browser — no native app required for the initial version.</p>
+      <div class="callout">
+        This document translates the SRS (Ex No. 02) and UML diagrams (Ex No. 03, 05) into actionable engineering requirements with Supabase-specific data models, live deployment targets, and a phased delivery roadmap.
+      </div>
+    </section>
+
+    <!-- 2. GOALS -->
+    <section id="goals">
+      <h2><span class="sec-num">02</span> Goals & Success Metrics</h2>
+      <div class="nfr-grid">
+        <div class="nfr-card">
+          <h4>Stock Accuracy</h4>
+          <div class="nfr-stat">99%</div>
+          <div class="nfr-desc">Real-time stock level accuracy after every Stock In / Stock Out transaction</div>
+        </div>
+        <div class="nfr-card">
+          <h4>System Uptime</h4>
+          <div class="nfr-stat">99.9%</div>
+          <div class="nfr-desc">Measured monthly via Vercel + Supabase SLA guarantees</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Page Response</h4>
+          <div class="nfr-stat">&lt;2s</div>
+          <div class="nfr-desc">All interactive pages must load within 2 seconds on a 4G connection</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Query Time</h4>
+          <div class="nfr-stat">&lt;3s</div>
+          <div class="nfr-desc">Stock queries and report generation complete in under 3 seconds</div>
+        </div>
+      </div>
+      <h3>Business Objectives</h3>
+      <p>Eliminate manual stock register errors · Provide real-time stock visibility to all authorised users · Automate stock updates on every sale and purchase · Generate professional invoices and reports without manual effort · Enable online payment collection through a secure payment gateway.</p>
+    </section>
+
+    <!-- 3. USER ROLES -->
+    <section id="actors">
+      <h2><span class="sec-num">03</span> User Roles</h2>
+      <div class="roles-grid">
+        <div class="role-card">
+          <div class="role-avatar ra-green">AD</div>
+          <h4>Administrator</h4>
+          <ul>
+            <li>Full system access</li>
+            <li>Manage users, roles, settings</li>
+            <li>Add/edit/delete all master data</li>
+            <li>View all reports</li>
+            <li>Override stock entries</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-avatar ra-blue">IC</div>
+          <h4>Inventory Clerk</h4>
+          <ul>
+            <li>Receive goods from suppliers</li>
+            <li>Perform Stock In operations</li>
+            <li>Perform Stock Out on confirmed sales</li>
+            <li>View stock levels</li>
+            <li>Create purchase orders</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-avatar ra-amber">BC</div>
+          <h4>Billing Clerk (Shopkeeper)</h4>
+          <ul>
+            <li>Browse available products</li>
+            <li>Generate invoices</li>
+            <li>Process sales transactions</li>
+            <li>Initiate payment requests</li>
+            <li>View customer records</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-avatar ra-purple">CU</div>
+          <h4>Customer</h4>
+          <ul>
+            <li>View product catalogue</li>
+            <li>Place orders</li>
+            <li>Make online payments</li>
+            <li>Receive invoices</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-avatar ra-red">SP</div>
+          <h4>Supplier</h4>
+          <ul>
+            <li>Receive purchase orders</li>
+            <li>Verify payment status</li>
+            <li>Confirm delivery</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-avatar" style="background:#f0f0f0;color:#666;">PG</div>
+          <h4>Payment Gateway</h4>
+          <ul>
+            <li>Non-human actor (Stripe)</li>
+            <li>Process card payments</li>
+            <li>Send payment webhooks</li>
+            <li>Handle refund flow</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FEATURE SCOPE -->
+    <section id="features">
+      <h2><span class="sec-num">04</span> Feature Scope</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-icon fc-green">🔒</div>
+          <h4>User Authentication & RBAC</h4>
+          <p>Supabase Auth with email/password login. Role-based access enforced via Row Level Security (RLS) policies on every table.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-blue">📦</div>
+          <h4>Product Management</h4>
+          <p>Full CRUD for products including name, SKU, category, unit of measure, price, and minimum stock threshold.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-amber">🏭</div>
+          <h4>Supplier Management</h4>
+          <p>Maintain supplier profiles, link suppliers to products, and associate suppliers with purchase orders.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-green">📊</div>
+          <h4>Stock Control (In & Out)</h4>
+          <p>Transactional Stock In (procurement) and Stock Out (sales). Auto-calculates current stock on every transaction.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-blue">🛒</div>
+          <h4>Purchase Order Management</h4>
+          <p>Create, send, and track POs. Supplier confirms delivery; system auto-triggers Stock In on approval.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-purple">👥</div>
+          <h4>Customer Management</h4>
+          <p>Maintain customer profiles, track purchase history, and associate customers with invoices and payments.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-amber">🧾</div>
+          <h4>Billing & Invoice Generation</h4>
+          <p>Auto-generate PDF invoices on confirmed sales. Invoice history per customer, with download and email dispatch.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-red">💳</div>
+          <h4>Online Payment (Stripe)</h4>
+          <p>Stripe Checkout integration. Webhook listens for payment confirmation and auto-updates invoice and stock status.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-green">📈</div>
+          <h4>Reports & Analytics</h4>
+          <p>Stock level report, transaction history, low-stock alerts, supplier performance, and sales summary dashboard.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon fc-blue">🔔</div>
+          <h4>Low Stock Alerts</h4>
+          <p>Automated email notifications (via Supabase Edge Functions) when stock drops below configured threshold.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FUNCTIONAL REQUIREMENTS -->
+    <section id="fr">
+      <h2><span class="sec-num">05</span> Functional Requirements</h2>
+
+      <h3 id="fr-auth">5.1 Authentication & Authorisation</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-A01</td><td>System shall provide email/password login via Supabase Auth</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-A02</td><td>System shall deny access to all routes without a valid session JWT</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-A03</td><td>System shall enforce role differentiation (Admin, Clerk, Billing, Customer, Supplier) using a user_profiles table linked to Supabase auth.users</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-A04</td><td>RLS policies shall restrict table access based on user role at the database level</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-A05</td><td>Passwords shall be hashed via Supabase Auth (bcrypt); no plaintext storage</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-A06</td><td>System shall support password reset via email OTP</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+          <tr><td>FR-A07</td><td>System shall support Google OAuth as an alternative login method</td><td><span class="tag tag-p3">P3</span></td><td><span class="tag tag-future">Future</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-products">5.2 Product Management</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-P01</td><td>Admin shall be able to create a product with: name, SKU (unique), category, unit of measure, selling price, cost price, and reorder threshold</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-P02</td><td>Admin shall be able to update any product field except the system-generated ID</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-P03</td><td>Admin shall be able to soft-delete a product (is_active = false); deleted products are not shown in sales but historical data is preserved</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-P04</td><td>All authenticated users shall be able to view the product list with search and category filter</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-P05</td><td>Product list shall show current stock quantity derived from stock_transactions table</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-P06</td><td>Admin shall be able to upload a product image (stored in Supabase Storage)</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-suppliers">5.3 Supplier Management</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-S01</td><td>Admin shall create supplier records with: name, contact person, email, phone, address, and GST/tax number</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-S02</td><td>Admin shall be able to link one or more products to a supplier</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-S03</td><td>System shall display all purchase orders linked to a supplier on the supplier detail page</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-S04</td><td>System shall send automated PO email to supplier when a Purchase Order is confirmed (via Supabase Edge Function + Resend)</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-stock">5.4 Stock Control</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-ST01</td><td>Inventory Clerk shall perform a Stock In operation: select product, enter quantity, date, batch number, and link to a Purchase Order</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-ST02</td><td>System shall insert a record into stock_transactions with type = 'STOCK_IN' on every Stock In</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-ST03</td><td>Inventory Clerk shall perform a Stock Out operation: select product, enter quantity, link to a confirmed Sales Order</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-ST04</td><td>System shall prevent Stock Out if available quantity is less than requested quantity</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-ST05</td><td>Current stock for any product shall be computed as SUM(STOCK_IN quantities) - SUM(STOCK_OUT quantities) using a Supabase database view</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-ST06</td><td>System shall trigger a low-stock alert notification when product stock falls below reorder_threshold</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-orders">5.5 Purchase Order Management</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-PO01</td><td>Inventory Clerk or Admin shall create a Purchase Order: select supplier, add line items (product + quantity + unit cost), set expected delivery date</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PO02</td><td>PO status lifecycle: DRAFT → SENT → PARTIALLY_RECEIVED → RECEIVED → CANCELLED</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PO03</td><td>On PO status = RECEIVED, system shall prompt Inventory Clerk to perform Stock In for each line item</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PO04</td><td>System shall auto-generate a PO number (PO-YYYY-XXXXX format) on creation</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-customers">5.6 Customer Management</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-C01</td><td>Admin and Billing Clerk shall create customer records: name, email, phone, billing address, GST number (optional)</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-C02</td><td>Customer detail page shall show full purchase history and outstanding invoices</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-C03</td><td>Customers shall optionally self-register via public signup and be assigned the 'customer' role</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-billing">5.7 Billing & Invoice Generation</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-B01</td><td>Billing Clerk shall create a Sales Order: select customer, add products with quantity, apply discount (optional), and confirm</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-B02</td><td>System shall auto-generate a PDF invoice on Sales Order confirmation using a server-side PDF library (e.g. react-pdf or puppeteer via Edge Function)</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-B03</td><td>Invoice shall include: invoice number, date, customer details, line items, subtotal, tax (GST), and total</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-B04</td><td>Generated invoice PDF shall be stored in Supabase Storage and retrievable via a signed URL</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-B05</td><td>System shall email invoice PDF to customer automatically after generation (via Resend or SendGrid)</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-payments">5.8 Online Payment (Stripe)</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-PAY01</td><td>System shall create a Stripe Checkout Session for a given invoice and redirect customer to payment page</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PAY02</td><td>System shall listen for Stripe webhook events (payment_intent.succeeded, payment_intent.payment_failed) and update invoice payment_status accordingly</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PAY03</td><td>On successful payment, system shall mark Sales Order as PAID and trigger Stock Out operation</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-PAY04</td><td>Stripe webhook endpoint shall verify Stripe-Signature header before processing any event</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="fr-reports">5.9 Reports</h3>
+      <table class="req-table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Release</th></tr></thead>
+        <tbody>
+          <tr><td>FR-R01</td><td>Admin shall view current stock levels for all products (sortable by quantity, category, supplier)</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-R02</td><td>Admin shall view transaction history: all Stock In and Stock Out events with filters (date range, product, user)</td><td><span class="tag tag-p1">P1</span></td><td><span class="tag tag-mvp">MVP</span></td></tr>
+          <tr><td>FR-R03</td><td>Admin shall view sales summary: revenue by date range, top products, top customers</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+          <tr><td>FR-R04</td><td>Admin shall export any report as CSV</td><td><span class="tag tag-p2">P2</span></td><td><span class="tag tag-v2">v2</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6. NFR -->
+    <section id="nfr">
+      <h2><span class="sec-num">06</span> Non-Functional Requirements</h2>
+      <div class="nfr-grid">
+        <div class="nfr-card">
+          <h4>Performance</h4>
+          <div class="nfr-stat">&lt;2s</div>
+          <div class="nfr-desc">All page loads including SSR. Stock query views must return in &lt;3s. Use Supabase indexes on foreign keys and product SKUs.</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Availability</h4>
+          <div class="nfr-stat">99.9%</div>
+          <div class="nfr-desc">Supabase Free tier guarantees uptime; upgrade to Pro for production SLA. Vercel edge network for zero-downtime deploys.</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Security</h4>
+          <div class="nfr-stat">RLS</div>
+          <div class="nfr-desc">Row Level Security enabled on ALL tables. No direct database access without an authenticated JWT. All secrets via Vercel environment variables.</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Scalability</h4>
+          <div class="nfr-stat">50+</div>
+          <div class="nfr-desc">Supports 50+ concurrent users. Supabase connection pooling via pgBouncer. Vercel Edge Functions for globally distributed API routes.</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Data Integrity</h4>
+          <div class="nfr-stat">ACID</div>
+          <div class="nfr-desc">All stock transactions wrapped in PostgreSQL transactions. Foreign key constraints enforced at the DB level. Soft deletes only.</div>
+        </div>
+        <div class="nfr-card">
+          <h4>Usability</h4>
+          <div class="nfr-stat">WCAG</div>
+          <div class="nfr-desc">AA accessibility compliance. Responsive design for tablet and desktop. Clear error messages. Confirmation dialogs for destructive actions.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. SUPABASE SCHEMA -->
+    <section id="schema">
+      <h2><span class="sec-num">07</span> Supabase Database Schema</h2>
+      <p>All tables live in the <code>public</code> schema. Row Level Security is enabled on every table. The <code>auth.users</code> table is managed by Supabase Auth.</p>
+      <div class="schema-grid">
+
+        <div class="schema-card">
+          <div class="schema-header">user_profiles</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">user_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">full_name</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">role</span><span class="col-type">enum</span></div>
+            <div class="schema-row"><span class="col-name">is_active</span><span class="col-type">bool</span></div>
+            <div class="schema-row"><span class="col-name">created_at</span><span class="col-type">timestamptz</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">products</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">sku</span><span class="col-type">text UNIQUE</span></div>
+            <div class="schema-row"><span class="col-name">name</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">category</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">unit</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">selling_price</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">cost_price</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">reorder_threshold</span><span class="col-type">int</span></div>
+            <div class="schema-row"><span class="col-name">is_active</span><span class="col-type">bool</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">suppliers</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">name</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">contact_person</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">email</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">phone</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">address</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">gst_number</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">is_active</span><span class="col-type">bool</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">stock_transactions</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">product_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">type</span><span class="col-type">STOCK_IN / STOCK_OUT</span></div>
+            <div class="schema-row"><span class="col-name">quantity</span><span class="col-type">int</span></div>
+            <div class="schema-row"><span class="col-name">reference_id</span><span class="col-type">uuid</span></div>
+            <div class="schema-row"><span class="col-name">notes</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">performed_by</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">created_at</span><span class="col-type">timestamptz</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">purchase_orders</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">po_number</span><span class="col-type">text UNIQUE</span></div>
+            <div class="schema-row"><span class="col-name">supplier_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">status</span><span class="col-type">enum</span></div>
+            <div class="schema-row"><span class="col-name">expected_date</span><span class="col-type">date</span></div>
+            <div class="schema-row"><span class="col-name">total_amount</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">created_by</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">po_line_items</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">po_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">product_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">quantity</span><span class="col-type">int</span></div>
+            <div class="schema-row"><span class="col-name">unit_cost</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">received_qty</span><span class="col-type">int</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">customers</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">name</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">email</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">phone</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">billing_address</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">gst_number</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">stripe_customer_id</span><span class="col-type">text</span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">sales_orders</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">customer_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">status</span><span class="col-type">enum</span></div>
+            <div class="schema-row"><span class="col-name">subtotal</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">tax_amount</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">total</span><span class="col-type">numeric</span></div>
+            <div class="schema-row"><span class="col-name">created_by</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+          </div>
+        </div>
+
+        <div class="schema-card">
+          <div class="schema-header">invoices</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="col-name">id</span><span><span class="pk-badge">PK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">sales_order_id</span><span><span class="fk-badge">FK</span> <span class="col-type">uuid</span></span></div>
+            <div class="schema-row"><span class="col-name">invoice_number</span><span class="col-type">text UNIQUE</span></div>
+            <div class="schema-row"><span class="col-name">pdf_url</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">payment_status</span><span class="col-type">enum</span></div>
+            <div class="schema-row"><span class="col-name">stripe_session_id</span><span class="col-type">text</span></div>
+            <div class="schema-row"><span class="col-name">paid_at</span><span class="col-type">timestamptz</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>Key Database View</h3>
+      <p>A Supabase view computes live stock quantities to avoid redundant storage:</p>
+      <div class="code-block"><pre><span class="code-comment">-- View: current_stock</span>
+<span class="code-key">CREATE OR REPLACE VIEW</span> <span class="code-val">current_stock</span> <span class="code-key">AS</span>
+  <span class="code-key">SELECT</span>
+    p.id         <span class="code-key">AS</span> product_id,
+    p.name       <span class="code-key">AS</span> product_name,
+    p.sku,
+    p.reorder_threshold,
+    <span class="code-fn">COALESCE</span>(<span class="code-fn">SUM</span>(
+      <span class="code-key">CASE</span> <span class="code-key">WHEN</span> st.type = <span class="code-str">'STOCK_IN'</span>  <span class="code-key">THEN</span> st.quantity
+           <span class="code-key">WHEN</span> st.type = <span class="code-str">'STOCK_OUT'</span> <span class="code-key">THEN</span> -st.quantity
+      <span class="code-key">END</span>
+    ), <span class="code-val">0</span>) <span class="code-key">AS</span> current_quantity
+  <span class="code-key">FROM</span> products p
+  <span class="code-key">LEFT JOIN</span> stock_transactions st <span class="code-key">ON</span> st.product_id = p.id
+  <span class="code-key">WHERE</span> p.is_active = <span class="code-val">true</span>
+  <span class="code-key">GROUP BY</span> p.id, p.name, p.sku, p.reorder_threshold;</pre></div>
+    </section>
+
+    <!-- 8. ARCHITECTURE -->
+    <section id="arch">
+      <h2><span class="sec-num">08</span> System Architecture</h2>
+      <p>The application uses a modern JAMstack architecture with server-side rendering for security-sensitive pages and client-side rendering for interactive dashboards.</p>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header"><div class="layer-dot dot-blue"></div><span>Client Layer (Browser)</span></div>
+        <div class="arch-layer-body">
+          <span class="arch-chip"><strong>Next.js 14</strong> App Router</span>
+          <span class="arch-chip"><strong>React 18</strong> Server Components</span>
+          <span class="arch-chip"><strong>Tailwind CSS</strong></span>
+          <span class="arch-chip"><strong>Supabase JS Client</strong> (browser)</span>
+          <span class="arch-chip"><strong>Recharts</strong> dashboards</span>
+          <span class="arch-chip"><strong>React Hook Form</strong></span>
+        </div>
+      </div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header"><div class="layer-dot dot-green"></div><span>Server / API Layer (Vercel)</span></div>
+        <div class="arch-layer-body">
+          <span class="arch-chip"><strong>Next.js API Routes</strong> (/app/api)</span>
+          <span class="arch-chip"><strong>Supabase SSR Client</strong> (server-side auth)</span>
+          <span class="arch-chip"><strong>Stripe Webhooks</strong> endpoint</span>
+          <span class="arch-chip"><strong>PDF generation</strong> (React PDF)</span>
+          <span class="arch-chip"><strong>Middleware</strong> route protection</span>
+        </div>
+      </div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header"><div class="layer-dot dot-amber"></div><span>Supabase Backend</span></div>
+        <div class="arch-layer-body">
+          <span class="arch-chip"><strong>PostgreSQL</strong> database</span>
+          <span class="arch-chip"><strong>Supabase Auth</strong> + JWT</span>
+          <span class="arch-chip"><strong>Row Level Security</strong> policies</span>
+          <span class="arch-chip"><strong>Supabase Storage</strong> (invoice PDFs, product images)</span>
+          <span class="arch-chip"><strong>Edge Functions</strong> (email notifications)</span>
+          <span class="arch-chip"><strong>Realtime</strong> (live stock updates)</span>
+        </div>
+      </div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-header"><div class="layer-dot dot-purple"></div><span>Third-Party Services</span></div>
+        <div class="arch-layer-body">
+          <span class="arch-chip"><strong>Stripe</strong> payment processing</span>
+          <span class="arch-chip"><strong>Resend</strong> transactional email</span>
+          <span class="arch-chip"><strong>Vercel</strong> hosting + CI/CD</span>
+          <span class="arch-chip"><strong>GitHub</strong> source control</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. DEPLOYMENT -->
+    <section id="deployment">
+      <h2><span class="sec-num">09</span> Live Deployment Guide</h2>
+
+      <h3>1. Supabase Project Setup</h3>
+      <div class="callout info">
+        Create a new project at <strong>supabase.com</strong> → copy SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY. Run schema migrations using Supabase CLI.
+      </div>
+      <div class="code-block"><pre><span class="code-comment"># Install Supabase CLI</span>
+<span class="code-fn">npm</span> install -g supabase
+
+<span class="code-comment"># Initialize and link project</span>
+<span class="code-fn">supabase</span> init
+<span class="code-fn">supabase</span> link --project-ref YOUR_PROJECT_REF
+
+<span class="code-comment"># Push schema to remote</span>
+<span class="code-fn">supabase</span> db push</pre></div>
+
+      <h3>2. Environment Variables (Vercel)</h3>
+      <div class="code-block"><pre><span class="code-key">NEXT_PUBLIC_SUPABASE_URL</span>=<span class="code-str">https://yourproject.supabase.co</span>
+<span class="code-key">NEXT_PUBLIC_SUPABASE_ANON_KEY</span>=<span class="code-str">eyJ...</span>
+<span class="code-key">SUPABASE_SERVICE_ROLE_KEY</span>=<span class="code-str">eyJ...</span>   <span class="code-comment"># server-only, never expose to client</span>
+<span class="code-key">STRIPE_SECRET_KEY</span>=<span class="code-str">sk_live_...</span>
+<span class="code-key">STRIPE_WEBHOOK_SECRET</span>=<span class="code-str">whsec_...</span>
+<span class="code-key">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</span>=<span class="code-str">pk_live_...</span>
+<span class="code-key">RESEND_API_KEY</span>=<span class="code-str">re_...</span>
+<span class="code-key">NEXT_PUBLIC_APP_URL</span>=<span class="code-str">https://your-app.vercel.app</span></pre></div>
+
+      <h3>3. Deploy to Vercel</h3>
+      <div class="code-block"><pre><span class="code-comment"># Push to GitHub, then connect repo in Vercel dashboard</span>
+<span class="code-comment"># Or via CLI:</span>
+<span class="code-fn">npm</span> install -g vercel
+<span class="code-fn">vercel</span> --prod</pre></div>
+
+      <div class="callout">
+        After deployment, register your Stripe webhook endpoint at <strong>dashboard.stripe.com/webhooks</strong> pointing to <code>https://your-app.vercel.app/api/webhooks/stripe</code>. Enable events: <code>payment_intent.succeeded</code>, <code>payment_intent.payment_failed</code>, <code>checkout.session.completed</code>.
+      </div>
+    </section>
+
+    <!-- 10. ROADMAP -->
+    <section id="timeline">
+      <h2><span class="sec-num">10</span> Delivery Roadmap</h2>
+      <div class="timeline">
+        <div class="tl-item active">
+          <div class="tl-label">Phase 1 · Weeks 1–3</div>
+          <div class="tl-title">MVP — Core Inventory</div>
+          <div class="tl-body">Supabase schema, authentication + RBAC, product CRUD, supplier CRUD, stock in/out transactions, current stock view, basic purchase order flow, dashboard with stock levels.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-label">Phase 2 · Weeks 4–5</div>
+          <div class="tl-title">Billing & Payments</div>
+          <div class="tl-body">Customer management, sales order creation, invoice PDF generation, Stripe Checkout integration, webhook handler, invoice storage in Supabase Storage.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-label">Phase 3 · Weeks 6–7</div>
+          <div class="tl-title">Notifications & Reports</div>
+          <div class="tl-body">Low-stock email alerts via Edge Functions, transactional email (invoice dispatch, PO to supplier), sales summary reports, CSV export, advanced filters.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-label">Phase 4 · Week 8</div>
+          <div class="tl-title">Polish & Production</div>
+          <div class="tl-body">Customer self-signup portal, product image uploads, mobile responsiveness audit, Supabase Realtime for live stock updates, load testing, production deployment.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. CONSTRAINTS -->
+    <section id="constraints">
+      <h2><span class="sec-num">11</span> Constraints & Dependencies</h2>
+      <table class="req-table">
+        <thead><tr><th>Type</th><th>Constraint</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Database</td><td>Supabase Free tier limits: 500MB DB, 1GB storage, 50,000 monthly active users</td><td>Upgrade to Supabase Pro ($25/mo) for production; sufficient for MVP</td></tr>
+          <tr><td>Security</td><td>service_role key must NEVER be exposed to the browser</td><td>Used only in Next.js API routes; not in NEXT_PUBLIC_ variables</td></tr>
+          <tr><td>Payments</td><td>Stripe requires HTTPS for webhook delivery</td><td>Vercel provides HTTPS by default on all deployments</td></tr>
+          <tr><td>Auth</td><td>RLS policies must cover every sensitive table or data leaks are possible</td><td>Enforce RLS audit during Phase 1 before any data goes live</td></tr>
+          <tr><td>Compliance</td><td>Invoice generation must include GST if Indian GST rules apply</td><td>Parameterise tax rate in app config; compute in sales_orders table</td></tr>
+          <tr><td>Users</td><td>Stock accuracy depends entirely on correct data entry by clerks</td><td>Add confirmation dialogs, audit logs, and admin override capability</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        Assumption: All users have reliable internet access. The system is not designed for offline-first operation in this release. Offline support may be added in a future version using Supabase local storage sync.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>Stock Maintenance System · PRD v1.0 · April 2026</span>
+  <span>Supabase + Next.js + Vercel · Derived from SRS Ex No. 02–05</span>
+</footer>
+
+</body>
+</html>

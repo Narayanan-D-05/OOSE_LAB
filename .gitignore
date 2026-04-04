@@ -1,0 +1,33 @@
+# Root gitignore
+# Dependencies
+node_modules/
+stock-system/node_modules/
+
+# Next.js
+.next/
+stock-system/.next/
+out/
+stock-system/out/
+
+# Environment files
+.env*
+stock-system/.env*
+
+# Logs
+*.log
+stock-system/*.log
+
+# Misc
+.DS_Store
+*.pem
+stock-system/.pnp
+stock-system/.pnp.*
+stock-system/.yarn/*
+
+# Vercel
+.vercel
+stock-system/.vercel
+
+# TypeScript
+*.tsbuildinfo
+stock-system/next-env.d.ts
