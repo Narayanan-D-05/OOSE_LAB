@@ -75,17 +75,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+    try {
+      // Use a race to avoid infinite hangs if DB has recursion loops
+      const { data, error } = await Promise.race([
+        supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .single(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Profile fetch timeout')), 5000))
+      ]) as any;
 
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return;
+      if (error) {
+        console.error('Error fetching profile:', error);
+        setError('Error loading user profile. Please sign out and try again.');
+        return;
+      }
+      
+      if (!data) {
+        console.error('No profile found for user:', userId);
+        setError('User profile not found. Please contact support.');
+        return;
+      }
+      
+      setUser(data as UserProfile);
+    } catch (err: any) {
+      console.error('Profile processing error:', err);
+      setError(err.message || 'Failed to initialize session');
     }
-    setUser(data as UserProfile);
   };
 
   const login = async (email: string, password: string) => {
