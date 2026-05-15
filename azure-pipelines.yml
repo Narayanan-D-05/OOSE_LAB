@@ -1,0 +1,22 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '17'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- script: |
+    echo "Building the project..."
+    javac *.java
+  displayName: 'Compile Java Files'
+
+- script: |
+    echo "Running the project..."
+    java Main
+  displayName: 'Run Java Program'
